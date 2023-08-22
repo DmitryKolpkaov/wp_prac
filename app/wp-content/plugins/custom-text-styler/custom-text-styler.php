@@ -53,6 +53,7 @@ add_action('admin_menu', 'custom_text_styler_menu');
 
 // HTML for admin page
 function custom_text_styler_page() {
+
     if (!current_user_can('manage_options')) {
         return;
     }
@@ -63,6 +64,16 @@ function custom_text_styler_page() {
         $font = sanitize_text_field($_POST['font']);
         $color = sanitize_text_field($_POST['color']);
         $font_style = sanitize_text_field($_POST['font_style']);
+        $decoration = sanitize_text_field($_POST['decoration']);
+        $opacity = sanitize_text_field($_POST['opacity']);
+        $background_color = sanitize_hex_color($_POST['background_color']);
+        $fontWeight = sanitize_text_field($_POST['font-weight']);
+
+        $textShadowH = intval($_POST['text-shadow-h']);
+        $textShadowV = intval($_POST['text-shadow-v']);
+        $textShadowBlur = intval($_POST['text-shadow-blur']);
+        $textShadowColor = sanitize_text_field($_POST['text-shadow-color']);
+
         $css = "
 
             <style>
@@ -70,12 +81,17 @@ function custom_text_styler_page() {
                     font-size: {$size}px;
                     font-family: {$font}, sans-serif;
                     font-style: {$font_style};
+                    font-weight: {$fontWeight};
+                    text-decoration: {$decoration};
+                    opacity: {$opacity};
+                    text-shadow: {$textShadowH}px {$textShadowV}px {$textShadowBlur}px {$textShadowColor};
                     color: {$color};
+                    background-color: {$background_color};
                 }
             </style>
         ";
 
-        $shortcode = "[custom_text size='$size' font='$font' font_style='$font_style' color='$color']{$text}[/custom_text]";
+        $shortcode = "[custom_text size='$size' font='$font' font_style='$font_style' font-weight='$fontWeight' decoration='$decoration' opacity='$opacity' text_shadow='{$textShadowH}px {$textShadowV}px {$textShadowBlur}px {$textShadowColor}' color='$color' background_color='$background_color']{$text}[/custom_text]";
 
         echo "<h2>Text:</h2>";
         echo "<pre class='text-block'>$text</pre>";
@@ -95,6 +111,11 @@ function custom_text_shortcode($atts, $content = null) {
             'size' => '20',
             'font' => 'Arial',
             'font_style' => 'normal',
+            'font-weight' => 'normal',
+            'decoration' => 'none',
+            'opacity'=>'0,5',
+            'text_shadow' => 'none',
+            'background_color' => 'transparent',
             'color' => '#000000'
         ),
         $atts
@@ -104,7 +125,12 @@ function custom_text_shortcode($atts, $content = null) {
     $style .= " font-size: {$atts['size']}px;";
     $style .= " font-family: {$atts['font']}, sans-serif;";
     $style .= " font-style: {$atts['font_style']};";
+    $style .= " font-weight: {$atts['font-weight']};";
     $style .= " color: {$atts['color']};";
+    $style .= " text-decoration: {$atts['decoration']};";
+    $style .= " opacity: {$atts['opacity']};";
+    $style .= " text-shadow: {$atts['text_shadow']};";
+    $style .= " background-color: {$atts['background_color']};";
     $style .= "'";
 
     return "<div class='custom-text' $style>" . do_shortcode($content) . "</div>";

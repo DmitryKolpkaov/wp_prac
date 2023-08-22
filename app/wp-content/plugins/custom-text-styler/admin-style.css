@@ -5,7 +5,6 @@
     width: 100%;
     max-width: 500px;
 }
-
 input[type="number"], input[type="text"] {
     width: 100px;
 }
