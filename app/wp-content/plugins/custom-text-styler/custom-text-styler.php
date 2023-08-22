@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Custom Text Styler
  * Description: A simple plugin to customize text styling.
- * Version: 0.0.1.
+ * Version: 0.0.2.
  * Author: Dmitriy Kolpakov
  */
 
@@ -62,18 +62,20 @@ function custom_text_styler_page() {
         $size = intval($_POST['size']);
         $font = sanitize_text_field($_POST['font']);
         $color = sanitize_text_field($_POST['color']);
+        $font_style = sanitize_text_field($_POST['font_style']);
         $css = "
 
             <style>
                 .custom-text {
                     font-size: {$size}px;
                     font-family: {$font}, sans-serif;
+                    font-style: {$font_style};
                     color: {$color};
                 }
             </style>
         ";
 
-        $shortcode = "[custom_text size='$size' font='$font' color='$color']{$text}[/custom_text]";
+        $shortcode = "[custom_text size='$size' font='$font' font_style='$font_style' color='$color']{$text}[/custom_text]";
 
         echo "<h2>Text:</h2>";
         echo "<pre class='text-block'>$text</pre>";
@@ -85,3 +87,27 @@ function custom_text_styler_page() {
 
     include_once('admin-template.php');
 }
+
+// Shortcode handler
+function custom_text_shortcode($atts, $content = null) {
+    $atts = shortcode_atts(
+        array(
+            'size' => '20',
+            'font' => 'Arial',
+            'font_style' => 'normal',
+            'color' => '#000000'
+        ),
+        $atts
+    );
+
+    $style = "style='";
+    $style .= " font-size: {$atts['size']}px;";
+    $style .= " font-family: {$atts['font']}, sans-serif;";
+    $style .= " font-style: {$atts['font_style']};";
+    $style .= " color: {$atts['color']};";
+    $style .= "'";
+
+    return "<div class='custom-text' $style>" . do_shortcode($content) . "</div>";
+}
+add_shortcode('custom_text', 'custom_text_shortcode');
+
