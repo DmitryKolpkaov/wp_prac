@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Custom Text Styler
  * Description: A simple plugin to customize text styling.
- * Version: 0.0.2.
+ * Version: 1.0.0
  * Author: Dmitriy Kolpakov
  */
 
@@ -15,13 +15,28 @@ if (!defined('ABSPATH')) {
 
 // Plugin activation hook
 function custom_text_plugin_activate() {
-    // Add any activation tasks here
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'custom_text_styler_settings';
+
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id INT NOT NULL AUTO_INCREMENT,
+        shortcode VARCHAR(255) NOT NULL,
+        css TEXT NOT NULL,
+        PRIMARY KEY (id)
+    ) $charset_collate;";
+
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
 }
 register_activation_hook(__FILE__, 'custom_text_plugin_activate');
 
 // Plugin deactivation hook
 function custom_text_plugin_deactivate() {
-    // Add any deactivation tasks here
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'custom_text_styler_settings';
+    $wpdb->query("DROP TABLE IF EXISTS $table_name");
 }
 register_deactivation_hook(__FILE__, 'custom_text_plugin_deactivate');
 
@@ -93,6 +108,14 @@ function custom_text_styler_page() {
 
         $shortcode = "[custom_text size='$size' font='$font' font_style='$font_style' font-weight='$fontWeight' decoration='$decoration' opacity='$opacity' text_shadow='{$textShadowH}px {$textShadowV}px {$textShadowBlur}px {$textShadowColor}' color='$color' background_color='$background_color']{$text}[/custom_text]";
 
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'custom_text_styler_settings';
+        $data = array(
+            'shortcode' => $shortcode,
+            'css' => $css
+        );
+        $wpdb->insert($table_name, $data);
+
         echo "<h2>Text:</h2>";
         echo "<pre class='text-block'>$text</pre>";
         echo "<h2>Generated CSS:</h2>";
@@ -113,10 +136,10 @@ function custom_text_shortcode($atts, $content = null) {
             'font_style' => 'normal',
             'font-weight' => 'normal',
             'decoration' => 'none',
-            'opacity'=>'0,5',
+            'opacity'=>'0.5',
             'text_shadow' => 'none',
             'background_color' => 'transparent',
-            'color' => '#000000'
+            'color' => 'transparent'
         ),
         $atts
     );
@@ -136,4 +159,19 @@ function custom_text_shortcode($atts, $content = null) {
     return "<div class='custom-text' $style>" . do_shortcode($content) . "</div>";
 }
 add_shortcode('custom_text', 'custom_text_shortcode');
+
+// Shortcode handler for saved styles
+function custom_text_styler_saved_shortcode($atts) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'custom_text_styler_settings';
+    $shortcode = sanitize_text_field($atts['shortcode']);
+    $record = $wpdb->get_row($wpdb->prepare("SELECT css FROM $table_name WHERE shortcode = %s", $shortcode));
+
+    if ($record) {
+        return "<style>{$record->css}</style>";
+    } else {
+        return "<!-- Custom Text Styler: Saved style not found -->";
+    }
+}
+add_shortcode('custom_text_styler_saved', 'custom_text_styler_saved_shortcode');
 

@@ -1,3 +1,9 @@
+<?php
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'custom_text_styler_settings';
+    $records = $wpdb->get_results("SELECT shortcode, css FROM $table_name");
+?>
+
 <div id="admin-form" class="wrap">
     <h1>Custom Text Styler</h1>
     <form method="post" action="">
