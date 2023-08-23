@@ -8,3 +8,80 @@
 input[type="number"], input[type="text"] {
     width: 100px;
 }
+label{
+    font-weight: bold;
+    text-shadow: 0.2px 0.2px 0.2px black;
+}
+
+/*blocks*/
+.text{
+    display: flex;
+}
+.text label{
+    padding-right: 15px;
+    padding-top: 27px;
+}
+.size{
+    display: flex;
+}
+.size label{
+    padding-right: 15px;
+    padding-top: 4px;
+}
+.family{
+    display: flex;
+}
+.family label{
+    padding-right: 15px;
+    padding-top: 4px;
+}
+.style{
+    display: flex;
+}
+.style label{
+    padding-right: 15px;
+    padding-top: 4px;
+}
+.decoration{
+    display: flex;
+}
+.decoration label{
+    padding-right: 15px;
+    padding-top: 4px;
+}
+.opacity{
+    display: flex;
+}
+.opacity label{
+    padding-right: 15px;
+    padding-top: 4px;
+}
+.shadow{
+    display: flex;
+}
+.shadow label{
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 4px;
+}
+.weight{
+    display: flex;
+}
+.weight label{
+    padding-right: 15px;
+    padding-top: 4px;
+}
+.color{
+    display: flex;
+}
+.color label{
+    padding-right: 15px;
+    padding-top: 2px;
+}
+.background-color{
+    display: flex;
+}
+.background-color label{
+    padding-right: 15px;
+    padding-top: 2px;
+}

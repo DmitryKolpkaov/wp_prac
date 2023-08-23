@@ -1,3 +1,6 @@
+body{
+    font-size: 16px !important;
+}
 #custom-text {
     margin-top: 20px;
     padding: 10px;
@@ -12,7 +15,7 @@
 
 .css-block{
     background-color: #0a4b78;
-    color: #999999;
+    color: #cfcfcf;
     font-size: 20px;
     height: 100%;
     width: 100%;
@@ -20,7 +23,7 @@
 
 .text-block{
     background-color: #0a4b78;
-    color: #999999;
+    color: #cfcfcf;
     font-size: 20px;
     padding-left: 15px;
     padding-top: 26px;
@@ -33,7 +36,7 @@
 
 .shortcode-block{
     background-color: #0a4b78;
-    color: #999999;
+    color: #cfcfcf;
     font-size: 20px;
     padding-left: 15px;
     padding-top: 26px;
