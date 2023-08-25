@@ -2,12 +2,12 @@
 /**
  * Plugin Name: Custom Text Styler
  * Description: A simple plugin to customize text styling.
+ * Version: 0.0.2.
  * Version: 1.0.0
  * Author: Dmitriy Kolpakov
  */
 
 // Code
-
 // Exit if accessed directly
 if (!defined('ABSPATH')) {
     exit;
@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 
 // Plugin activation hook
 function custom_text_plugin_activate() {
+    // Add any activation tasks here
     global $wpdb;
     $table_name = $wpdb->prefix . 'custom_text_styler_settings';
 
@@ -34,20 +35,18 @@ register_activation_hook(__FILE__, 'custom_text_plugin_activate');
 
 // Plugin deactivation hook
 function custom_text_plugin_deactivate() {
+    // Add any deactivation tasks here
     global $wpdb;
     $table_name = $wpdb->prefix . 'custom_text_styler_settings';
     $wpdb->query("DROP TABLE IF EXISTS $table_name");
 }
 register_deactivation_hook(__FILE__, 'custom_text_plugin_deactivate');
 
-
 // Enqueue styles and scripts
 function custom_text_styler_enqueue() {
     wp_enqueue_style('custom-text-styler-style', plugins_url('style.css', __FILE__));
 }
 add_action('admin_enqueue_scripts', 'custom_text_styler_enqueue');
-
-
 // Enqueue styles and scripts for admin
 function custom_text_styler_admin_enqueue() {
     wp_enqueue_style('custom-text-styler-admin-style', plugins_url('admin-style.css', __FILE__));
@@ -68,7 +67,6 @@ add_action('admin_menu', 'custom_text_styler_menu');
 
 // HTML for admin page
 function custom_text_styler_page() {
-
     if (!current_user_can('manage_options')) {
         return;
     }
@@ -83,7 +81,6 @@ function custom_text_styler_page() {
         $opacity = sanitize_text_field($_POST['opacity']);
         $background_color = sanitize_hex_color($_POST['background_color']);
         $fontWeight = sanitize_text_field($_POST['font-weight']);
-
         $textShadowH = intval($_POST['text-shadow-h']);
         $textShadowV = intval($_POST['text-shadow-v']);
         $textShadowBlur = intval($_POST['text-shadow-blur']);
@@ -108,6 +105,7 @@ function custom_text_styler_page() {
 
         $shortcode = "[custom_text size='$size' font='$font' font_style='$font_style' font-weight='$fontWeight' decoration='$decoration' opacity='$opacity' text_shadow='{$textShadowH}px {$textShadowV}px {$textShadowBlur}px {$textShadowColor}' color='$color' background_color='$background_color']{$text}[/custom_text]";
 
+
         global $wpdb;
         $table_name = $wpdb->prefix . 'custom_text_styler_settings';
         $data = array(
@@ -124,6 +122,10 @@ function custom_text_styler_page() {
         echo "<pre class='shortcode-block'>$shortcode</pre>";
     }
 
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'custom_text_styler_settings';
+    $records = $wpdb->get_results("SELECT shortcode, css FROM $table_name");
+
     include_once('admin-template.php');
 }
 
@@ -136,9 +138,11 @@ function custom_text_shortcode($atts, $content = null) {
             'font_style' => 'normal',
             'font-weight' => 'normal',
             'decoration' => 'none',
+            'opacity'=>'0,5',
             'opacity'=>'0.5',
             'text_shadow' => 'none',
             'background_color' => 'transparent',
+            'color' => '#000000',
             'color' => 'transparent'
         ),
         $atts
@@ -174,4 +178,3 @@ function custom_text_styler_saved_shortcode($atts) {
     }
 }
 add_shortcode('custom_text_styler_saved', 'custom_text_styler_saved_shortcode');
-

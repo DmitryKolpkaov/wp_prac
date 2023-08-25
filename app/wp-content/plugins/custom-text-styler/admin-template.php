@@ -3,11 +3,9 @@
     $table_name = $wpdb->prefix . 'custom_text_styler_settings';
     $records = $wpdb->get_results("SELECT shortcode, css FROM $table_name");
 ?>
-
 <div id="admin-form" class="wrap">
     <h1>Custom Text Styler</h1>
     <form method="post" action="">
-
         <div class="text">
             <label for="text">Enter your text:</label>
             <textarea name="text" id="text" rows="4" cols="50"></textarea>
@@ -118,7 +116,6 @@
 
         <br>
         <br>
-
         <input type="submit" value="Generate" class="button button-primary">
     </form>
 </div>
