@@ -2,7 +2,6 @@
 /**
  * Plugin Name: Custom Text Styler
  * Description: A simple plugin to customize text styling.
- * Version: 0.0.2.
  * Version: 1.0.0
  * Author: Dmitriy Kolpakov
  */
